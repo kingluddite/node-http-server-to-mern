@@ -1,36 +1,12 @@
-// sample http server from docs: https://nodejs.org/api/synopsis.html
-const http = require('http')
-const fs = require('fs')
-const HOSTNAME = '127.0.0.1'
-const PORT = 3000
+const express = require('express')
+// initialize express and invoke it
+const app = express()
 
-const server = http.createServer((req, res) => {
-  let filePath = __dirname + '/public/index.html'
+const port = 3000
 
-  console.log(req.url)
-
-  switch (req.url) {
-    case '/aboutus':
-      filePath = __dirname + '/public/about.html'
-      break
-    case '/contactus':
-      filePath = __dirname + '/public/contact.html'
-      break
-    default:
-      filePath = __dirname + '/public/index.html'
-  }
-
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      res.statusCode = 404
-      res.end('page not found', 'utf8')
-    }
-    res.statusCode = 200 // ok
-    res.setHeader('Content-Type', 'text/html')
-    res.end(data, 'utf8')
-  })
+// home route
+app.get('/', (req, res) => {
+  res.send('home page')
 })
 
-server.listen(PORT, HOSTNAME, () => {
-  console.log(`Server is running at http://${HOSTNAME}/${PORT}`)
-})
+app.listen(port, console.log(`server is listening on port ${port}`))
