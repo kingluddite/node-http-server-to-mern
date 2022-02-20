@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/tasks', tasks)
 // app.get('/api/v1/tasks')        - get all the tasks
 // app.post('/api/v1/tasks')       - create a new task
-// app.path('/api/v1/tasks/:id')   - get single task
+// app.put('/api/v1/tasks/:id')   - get single task
 // app.delete('/api/v1/tasks/:id') - delete task
 
 // using api
