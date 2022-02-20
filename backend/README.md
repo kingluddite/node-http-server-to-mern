@@ -2,6 +2,10 @@
 * Add controllers and routers folder for better structure
 * View this endpoint - http://localhost:3000/api/v1/tasks and you will see 'all items from the file'
 
+## POSTMAN
+* Darkmode
+* Global Variables in routes
+
 ## Routes
 ```
 ```
