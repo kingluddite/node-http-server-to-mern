@@ -6,6 +6,18 @@
 * Darkmode
 * Global Variables in routes
 
+### Added POST and grab param from URL using dynamic variable in route
+
+## REST API
+![REST API diagram](https://i.imgur.com/Z6R5271.png)
+* Different API HTTP Verbs with same path:
+
+GET api/tasks
+POST api/tasks
+
+* Are two completely different requests
+* API build around CRUD (Create, Read, Update, Destroy)
+
 ## Routes
 ```
 ```

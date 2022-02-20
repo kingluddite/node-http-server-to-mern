@@ -3,11 +3,25 @@ const getAllTasks = (req, res) => {
 }
 
 const createTask = (req, res) => {
-  res.send('create a new task')
+  // here we test out if our middleware is working
+  // we added Body in postman > raw > JSON and sent this:
+  // {
+  //   "name": "tasks"
+  // }
+  // hit send in postman and the above JSON is what you will see
+  // but we could also send this
+
+  res.json(req.body)
+  // res.send('create a new task')
 }
 
 const getTask = (req, res) => {
-  res.send('get single task')
+  // res.send('get single task')
+  // with endpoint {{URL}}/tasks/1 the body returns in postman:
+  // {
+  //   "id": "1"
+  // }
+  res.json({ id: req.params.id })
 }
 
 const updateTask = (req, res) => {
