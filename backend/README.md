@@ -1,32 +1,40 @@
-# Express Server
-* Add controllers and routers folder for better structure
-* View this endpoint - http://localhost:3000/api/v1/tasks and you will see 'all items from the file'
+# Mongoose
+* Place pwd and database name (you can use default or put your own - I will make my own)
 
-## POSTMAN
-* Darkmode
-* Global Variables in routes
+* connect.js has hardcoded user, pwd and db name in string to Atlas
 
-### Added POST and grab param from URL using dynamic variable in route
+## Problem with connecting to Database and Express not in sync
+* our server and db don't work in sync
+* currently our server is first listening on port 3000 and only then are we connecting to our database
+* but think about it, why do we need our server if we are not connected to the Database - because whatever we are about to do will fail anyway without our Database - it would make more sense is to first try to connect to our Database server and only if we are successful then we spin up the express server and if we can't connect to our Database then we'll just kill the app
 
-## REST API
-![REST API diagram](https://i.imgur.com/Z6R5271.png)
-* Different API HTTP Verbs with same path:
+### Restructure code
+* We won't invoke mongoose.connect()
+* We'll refactor the code and set it up as a function and invoke it the server.js
 
-GET api/tasks
-POST api/tasks
-
-* Are two completely different requests
-* API build around CRUD (Create, Read, Update, Destroy)
-
-## Routes
+### Unneeded code
+* Options no longer needed in version 6 of Mongoose
 ```
+return mongoose.connect(connectionString, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true
+})
 ```
-app.get('/api/v1/tasks')        - get all the tasks
-app.post('/api/v1/tasks')       - create a new task
-app.path('/api/v1/tasks/:id')   - get single task
-app.delete('/api/v1/tasks/:id') - delete task
 
-* Hit this endpoint - http://localhost:3000/api/v1/tasks
-* You will see all items
-* break up routes into controllers and routes folders
-* add middleware with `app.use(express.json())` to access `req.body` data
+## dotenv
+* Do in root
+* Create `.env` in root of app
+* Do not need to use quotation marks
+
+`/.env`
+```
+MONGO_URI=mongodb+srv://taskinator:0mjfeogKEz6XMTDpX@nodeexpresstasks.f03n6.mongodb.net/TASK_MANAGER_DB?retryWrites=true&w=majority
+```
+
+## .gitignore
+```
+node_modules
+.DS_Store
+```
