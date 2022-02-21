@@ -1,40 +1,39 @@
-# Mongoose
-* Place pwd and database name (you can use default or put your own - I will make my own)
+# Models
+* MongoDB is the wild west
+* you can do anything and this is a problem when you want to validate data to make sure it is in the form you want (this is easy in MySQL relational Database but how can we do this in NoSQL Database like MongoDB? Through an ODM like Mongoose)
 
-* connect.js has hardcoded user, pwd and db name in string to Atlas
+## What is Mongoose ODM?
+* Image result for odm mongoose
+* Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node.js
+* It manages relationships between data, provides schema validation, and is used to translate between objects in code and the representation of those objects in MongoDB
 
-## Problem with connecting to Database and Express not in sync
-* our server and db don't work in sync
-* currently our server is first listening on port 3000 and only then are we connecting to our database
-* but think about it, why do we need our server if we are not connected to the Database - because whatever we are about to do will fail anyway without our Database - it would make more sense is to first try to connect to our Database server and only if we are successful then we spin up the express server and if we can't connect to our Database then we'll just kill the app
+## Mongoose Schema types
+* [docs for mongoose schema types](https://mongoosejs.com/docs/schematypes.html)
+### Mongoose Models
+* In Mongoose a Model is a wrapper for the Schema, so if the Schema defines the structure for the Document (ie type, validations, etc), a Mongoose Model provides an interface to the Database so using the model will be able to CRUD our Documents with ease since the API is extremely straight forward
+* Models are fancy contructors compiled from Schema definitions 
+* An instance of a model is called a `document`
+* [model docs](https://mongoosejs.com/docs/models.html)
+* if you enter this in postman
 
-### Restructure code
-* We won't invoke mongoose.connect()
-* We'll refactor the code and set it up as a function and invoke it the server.js
-
-### Unneeded code
-* Options no longer needed in version 6 of Mongoose
 ```
-return mongoose.connect(connectionString, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true
-})
-```
-
-## dotenv
-* Do in root
-* Create `.env` in root of app
-* Do not need to use quotation marks
-
-`/.env`
-```
-MONGO_URI=mongodb+srv://taskinator:0mjfeogKEz6XMTDpX@nodeexpresstasks.f03n6.mongodb.net/TASK_MANAGER_DB?retryWrites=true&w=majority
+{
+    "name": "tasks",
+    "completed": true
+}
 ```
 
-## .gitignore
+* You will get this output 201 Created
+* The `_id` is a hint letting you know that id was created in MongoDB
+* View in MongoDB and you will see two documents entered
+* If you add in postman fields you did not add in schema, they will be ignored
 ```
-node_modules
-.DS_Store
+{
+    "task": {
+        "name": "tasks",
+        "completed": true,
+        "_id": "621413615cfb1b9270e560f6",
+        "__v": 0
+    }
+}
 ```
