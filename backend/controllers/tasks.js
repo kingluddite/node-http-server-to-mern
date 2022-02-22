@@ -46,10 +46,6 @@ const getTask = async (req, res) => {
   }
 }
 
-const updateTask = (req, res) => {
-  res.send('update task')
-}
-
 const deleteTask = async (req, res) => {
   try {
     const { id: taskId } = req.params
@@ -60,6 +56,29 @@ const deleteTask = async (req, res) => {
     res.status(200).json({ task })
     // res.status(200).send()
     // res.status(200).json({ task: null, status: 'success' })
+  } catch (error) {
+    res.status(500).json({ msg: error })
+  }
+}
+
+const updateTask = async (req, res) => {
+  try {
+    // grab the id parameter from the URL
+    const { id: taskId } = req.params
+
+    // search for task
+    const task = await Task.findOneAndUpdate({ _id: taskId }, req.body, {
+      new: true, // will return the new item that was updated
+      runValidators: true, // no explanation needed as this is obvious as to what it does
+    })
+
+    // check if task id exists
+    if (!task) {
+      return res.status(404).json({ msg: `No task with id : ${taskId}` })
+    }
+
+    // pass in the data we are updating from the request body
+    res.status(200).json({ task })
   } catch (error) {
     res.status(500).json({ msg: error })
   }
