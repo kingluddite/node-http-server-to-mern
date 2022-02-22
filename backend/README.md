@@ -1,27 +1,29 @@
 # Validating Models
-* [Mongoose validation docs](https://mongoosejs.com/docs/validation.html)
-* Set up properties as objects and then we can set up built-in validators
-
-`models/Tasks.js`
+* Now we add a try catch that doens't hang because we didn't handle our Promise rejection gracefully (remember we are using async/await)
+* You will get an error not in the terminal and Postman won't stop or keep hanging but you will send and error as part of the response from the request
 
 ```
-const mongoose = require('mongoose')
-
-const TaskSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'must provide name'],
-    trim: true,
-    maxlength: [20, 'name can not be more than 20 characters'],
-  },
-  completed: {
-    type: Boolean,
-    default: false,
-  },
-})
-
-module.exports = mongoose.model('Task', TaskSchema)
+{
+    "msg": {
+        "errors": {
+            "name": {
+                "name": "ValidatorError",
+                "message": "must provide name",
+                "properties": {
+                    "message": "must provide name",
+                    "type": "required",
+                    "path": "name"
+                },
+                "kind": "required",
+                "path": "name"
+            }
+        },
+        "_message": "Task validation failed",
+        "name": "ValidationError",
+        "message": "Task validation failed: name: must provide name"
+    }
+}
 ```
 
-## Problem
-* We don't get a response because we error and the transaction doesn't happen but we need to handle this better
+* We can simplify the try catch so it isn't in every api route but for now we will have it in every route
+* We can also make the error much shorter (it is huge right now!)
