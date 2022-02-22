@@ -1,29 +1,12 @@
-# Validating Models
-* Now we add a try catch that doens't hang because we didn't handle our Promise rejection gracefully (remember we are using async/await)
-* You will get an error not in the terminal and Postman won't stop or keep hanging but you will send and error as part of the response from the request
+# CRUD in API
+* With every model we have access to all these methods
+* A query has a `.then()` and can be used as a promise and we can use async/await
+* **note** Mongoose queries are not promises - They have a `.then()` function for `co` and `async/await` as a convenience. However, unlike promises, calling a query's `.then()` can execute the query multiple times.
 
-```
-{
-    "msg": {
-        "errors": {
-            "name": {
-                "name": "ValidatorError",
-                "message": "must provide name",
-                "properties": {
-                    "message": "must provide name",
-                    "type": "required",
-                    "path": "name"
-                },
-                "kind": "required",
-                "path": "name"
-            }
-        },
-        "_message": "Task validation failed",
-        "name": "ValidationError",
-        "message": "Task validation failed: name: must provide name"
-    }
-}
-```
-
-* We can simplify the try catch so it isn't in every api route but for now we will have it in every route
-* We can also make the error much shorter (it is huge right now!)
+## find()
+* [find() docs](https://mongoosejs.com/docs/api.html#model_Model.find)
+* Find all with find({})
+## Resources
+* [Mongoose query docs](https://mongoosejs.com/docs/queries.html)
+* CRUD - https://coursework.vschool.io/mongoose-crud/
+* 
