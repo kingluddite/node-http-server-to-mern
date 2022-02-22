@@ -1,30 +1,76 @@
-# Errors
-* In Get single task request add a bad id and send in postman and you will get the following error
-
+## Delete a record
 ```
-{
-    "msg": "No task with id : 621413d45cfb1b9270e560f1"
+const deleteTask = async (req, res) => {
+  try {
+    const { id: taskId } = req.params
+    const task = await Task.findOneAndDelete({ _id: taskId })
+    if (!task) {
+      return res.status(404).json({ msg: `No task with id : ${taskId}` })
+    }
+    res.status(200).json({ task })
+  } catch (error) {
+    res.status(500).json({ msg: error })
+  }
 }
 ```
 
-## But if you add less characters than a mongo id or more characters in a mongo id like this:
+## Postman
+* Grab an id of a task using getAllTasks request
+* Update the request by appending the id you copied to the clipboard and make it look similar to this:
 
+`{{URL}}/tasks/621456cdec46b85c5ae3a4e8`
 
-`{{URL}}/tasks/621bad`
+* And it will output this postman
 
-* You will get this `CastError`
+```
+{
+    "task": {
+        "_id": "621456cdec46b85c5ae3a4e8",
+        "name": "testing task",
+        "completed": false,
+        "__v": 0
+    }
+}
+```
+
+* If you change 1 character in id in request you will get the 404 error 
+  
+  
+```
+{
+    "msg": "No task with id : 621456cdec46b85c5ae3a4e9"
+}
+```
+
+* If you change the length of the id you will get the CastError because it knows it isn't a valid `_id`
+* This is the error we see in postman (this is coming from the `catch` block):
 
 ```
 {
     "msg": {
-        "stringValue": "\"621bad\"",
+        "stringValue": "\"6\"",
         "valueType": "string",
         "kind": "ObjectId",
-        "value": "621bad",
+        "value": "6",
         "path": "_id",
         "reason": {},
         "name": "CastError",
-        "message": "Cast to ObjectId failed for value \"621bad\" (type string) at path \"_id\" for model \"Task\""
+        "message": "Cast to ObjectId failed for value \"6\" (type string) at path \"_id\" for model \"Task\""
     }
+}
+```
+
+## Better status
+* We don't need to send the task back in the response, we just need to know we get a 200 success so here are the other commonly used responses
+
+`res.status(200).send()` - that will send the 200 with no other information in the response
+
+
+`res.status(200).json({ task: null, status: 'success' })` and this send back a good message letting you know all is well and this is a similar response you will see in postman:
+
+```
+{
+    "task": null,
+    "status": "success"
 }
 ```
