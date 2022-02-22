@@ -6,14 +6,17 @@ const tasks = require('./routes/tasks')
 // we invoke connectDB
 const connectDB = require('./db/connect')
 require('dotenv').config()
+
 // middleware
+app.use(express.static('./public'))
+
 // get access to data in req.body
 app.use(express.json())
 
 // home route
-app.get('/', (req, res) => {
-  res.send('home page')
-})
+// app.get('/', (req, res) => {
+//   res.send('home page')
+// })
 
 app.use('/api/v1/tasks', tasks)
 // app.get('/api/v1/tasks')        - get all the tasks

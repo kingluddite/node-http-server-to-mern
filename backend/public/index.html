@@ -2,152 +2,46 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Bootstrap 4 Website</title>
-
-    <!-- Bootstrap 4.4.1 -->
+    <!-- favicon -->
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <!-- font awesome -->
     <link
       rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
     />
-
-    <!-- Fontawesome 5.11.2 -->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
-    />
-
-    <link rel="stylesheet" href="./css/style.css" />
+    <!-- normalize css -->
+    <link rel="stylesheet" href="./assets/css/normalize.css" />
+    <!-- main css -->
+    <link rel="stylesheet" href="./assets/css/main.css" />
+    <title>Task Manager || Final</title>
   </head>
   <body>
-    <div id="header-include"></div>
-
-    <!-- Slider -->
-    <div class="carousel" id="mainSlide">
-      <div class="carousel-inner">
-        <img class="w-100 d-block" src="./images/slide-mountains.jpg" alt="" />
+    <form class="task-form">
+      <h4>task manager</h4>
+      <div class="form-control">
+        <input
+          type="text"
+          name="name"
+          class="task-input"
+          placeholder="e.g. wash dishes"
+        />
+        <button type="submit" class="btn submit-btn">submit</button>
       </div>
-    </div>
-
-    <!-- Content -->
-    <div class="container-fluid p-0">
-      <h4 class="bg-light p-5" id="projectAnchor">Project</h4>
-
-      <!-- Python Cards-->
-      <div class="card-deck p-5">
-        <div class="card">
-          <img
-            class="card-img-top"
-            src="./images/projects-macbook-stats.jpg"
-            alt=""
-          />
-          <div class="card-body">
-            <h6 class="card-title">First Project</h6>
-            <p class="card-text">
-              My first project Lorem ipsum dolor sit amet, officia excepteur ex
-              fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur
-              mollit ex esse exercitation amet. Nisi anim cupidatat excepteur
-              officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip
-              amet voluptate voluptate dolor minim nulla est proident. Nostrud
-              officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex
-              occaecat reprehenderit commodo officia dolor Lorem duis laboris
-              cupidatat officia voluptate. Culpa proident adipisicing id nulla
-              nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua
-              reprehenderit commodo ex non excepteur duis sunt velit enim.
-              Voluptate laboris sint cupidatat ullamco ut ea consectetur et est
-              culpa et culpa duis.
-            </p>
-            <a class="btn btn-sm btn-dark" href="#">Learn More</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <img class="card-img-top" src="./images/projects-robot.jpg" alt="" />
-          <div class="card-body">
-            <h6 class="card-title">Second Project</h6>
-            <p class="card-text">
-              Lorem ipsum dolor sit amet, officia excepteur ex fugiat
-              reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit
-              ex esse exercitation amet. Nisi anim cupidatat excepteur officia.
-              Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet
-              voluptate voluptate dolor minim nulla est proident. Nostrud
-              officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex
-              occaecat reprehenderit commodo officia dolor Lorem duis laboris
-              cupidatat officia voluptate. Culpa proident adipisicing id nulla
-              nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua
-              reprehenderit commodo ex non excepteur duis sunt velit enim.
-              Voluptate laboris sint cupidatat ullamco ut ea consectetur et est
-              culpa et culpa duis.
-            </p>
-            <a class="btn btn-sm btn-dark" href="#">Learn More</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <img
-            class="card-img-top"
-            src="./images/projects-robodog.jpg"
-            alt=""
-          />
-          <div class="card-body">
-            <h6 class="card-title">Third Project</h6>
-            <p class="card-text">Coming Soon</p>
-            <a class="btn btn-sm btn-dark" href="#">Learn More</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Node Cards -->
-      <div class="card-deck p-5">
-        <div class="card">
-          <img
-            src="./images/projects-coding-sunset.jpg"
-            class="card-img-top"
-            alt=""
-          />
-          <div class="card-body">
-            <h6 class="card-title">Node Project</h6>
-            <p class="card-text">My first Node.js project...</p>
-            <a href="#" class="btn btn-sm btn-dark">Learn More</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <img
-            src="./images/projects-retro-computer.jpg"
-            class="card-img-top"
-            alt=""
-          />
-          <div class="card-body">
-            <h6 class="card-title">React Project</h6>
-            <p class="card-text">My first React project...</p>
-            <a href="#" class="btn btn-sm btn-dark">Learn More</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <img
-            src="./images/projects-hello-world.jpg"
-            class="card-img-top"
-            alt=""
-          />
-          <div class="card-body">
-            <h6 class="card-title">PHP Project</h6>
-            <p class="card-text">My first php project...</p>
-            <a href="#" class="btn btn-sm btn-dark">Learn More</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="footer-include"></div>
-
-    <!-- JQuery -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-
-    <!-- Bootstrap 4.4.1 -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <!-- <script src="js/script.js"></script> -->
+      <div class="form-alert"></div>
+    </form>
+    <section class="tasks-container">
+      <p class="loading-text">Loading...</p>
+      <div class="tasks"></div>
+    </section>
+    <!-- axios -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+      integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="./assets/js/browser-app.js"></script>
   </body>
 </html>
