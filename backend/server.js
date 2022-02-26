@@ -6,7 +6,7 @@ const tasks = require('./routes/tasks')
 // we invoke connectDB
 const connectDB = require('./db/connect')
 require('dotenv').config()
-
+const notFound = require('./middlewares/not-found')
 // middleware
 app.use(express.static('./public'))
 
@@ -19,18 +19,7 @@ app.use(express.json())
 // })
 
 app.use('/api/v1/tasks', tasks)
-// app.get('/api/v1/tasks')        - get all the tasks
-// app.post('/api/v1/tasks')       - create a new task
-// app.put('/api/v1/tasks/:id')   - get single task
-// app.delete('/api/v1/tasks/:id') - delete task
-
-// using api
-// using v1 for version
-// example - https://hn.algolia.com/api
-
-// only if we can connect to the Database server we then spin up the express server
-// because connectDB returns a Promise we can use async/await
-
+app.use(notFound)
 const port = 3000
 const start = async () => {
   // anytime you have an asynchronous operation it is very useful to

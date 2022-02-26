@@ -1,99 +1,63 @@
-# Response choices
-* We use just one route as an example but this applies to all controllers
-* **BEST PRACTICE** If you change your responses for every route it will be very confusing for whomever is using your API
-* You can set up your own CUSTOM reponses but if you want the current front end to work properly, the reponses HAVE TO BE EXACTLY the same because that is what the app is expecting
-```
-const getAllTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find({})
-    // we send back the object
-    // inside the object there is a property by the name of "tasks"
-    // res.status(200).json({ tasks: tasks })
-    res.status(200).json({ tasks })
-  } catch (error) {
-    res.status(500).json({ msg: error })
-  }
-}
-```
+# Route Not Found 404
 
-* We use this `res.status(200).json({ tasks })`
+## View our app in browser
+`http://localhost:3000/`
 
-## But we can use alternate responses
-* There is no right way but whichever way you use make sure to be consistent
 
-### We could add the amount of tasks
-```
-const getAllTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find({})
-    // lets add our tasks and another property with the number of tasks
-    res.status(200).json({ tasks, amount: tasks.length })
-  } catch (error) {
-    res.status(500).json({ msg: error })
-  }
-}
-```
+## View API list of tasks
+`http://localhost:3000/api/v1/tasks`
 
-## We could send a flag
-```
-const getAllTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find({})
-    // lets add a success flag and our tasks and another property with the number of tasks
-    res.status(200).json({ success:true, data:{tasks, nbHits:tasks.length} })
-  } catch (error) {
-    res.status(500).json({ msg: error })
-  }
-}
-```
+## If you go to route not defined like:
+`http://localhost:3000/api/v1/yo`
 
-## Alternate flag
+* You get this:
+
+`Cannot GET /api/v1/yo`
+
+* Check the network tab and you will see a status of 404
+* This is the default 404
+
+## Let's set up a custom 404
+* Here is algolia's custom error - https://hn.algolia.com/api/v1/item
+
+* **IMPORTANT** The location of the custom 404 is IMPORTANT
+
+* We could add the 404 in the server.js file but we will add it inside a `middlewares` folder
+
+`middlewares/not-found.js`
 
 ```
-const getAllTasks = async (req, res) => {
-  try {
-    const tasks = await Task.find({})
-    // lets add a success flag and our tasks and another property with the number of tasks
-    res.status(200).json({ status: "success", data:{tasks, nbHits:tasks.length} })
-  } catch (error) {
-    res.status(500).json({ msg: error })
-  }
-}
+const notFound = (req, res) => res.status(404).send('Route does not exist')
+
+module.exports = notFound
 ```
 
-### Possible con to setting up status or successes or data
-* Just because of the frontend
-* Usually on the frontend we are dealing with async reponses we usually are using a try/catch and because of that the status or success flags to be redundant
-  * Because if I am successful on frontend then our frontend try catch code will run regardless and if there is some kind of error you will have your code in the catch block
-    * Why not prefering to use `data` because if you are using axios or fetch it will right away return a `data` property and this means if you set the controller response to have a `data` returned in the object, then on the front end you will have `data` and inside that `data` object you will have another `data` object so your path will be `data: { data: {tasks} }` which is redundant
+### middleware or middlewares?
+* **note** The noun middleware can be countable or uncountable. In more general, commonly used, contexts, the plural form will also be middleware. However, in more specific contexts, the plural form can also be middlewares e.g. in reference to various types of middlewares or a collection of middlewares
 
-* So front end code like this:
+## Make sure to require our new middleware
+`server.js`
 
 ```
+// MORE CODE
+
+const notFound = require('./middlewares/not-found')
+// middleware
+app.use(express.static('./public'))
+
  // MORE CODE
 
-const showTasks = async () => {
-  loadingDOM.style.visibility = 'visible'
-  try {
-    const {
-      data: { tasks },
-    } = await axios.get('/api/v1/tasks')
- 
- // MORE CODE
+app.use('/api/v1/tasks', tasks)
+app.use(notFound)
+
+// MORE CODE
 ```
 
-* And we would need to change it to this:
+## Now visit the error not defined again
+`http://localhost:3000/api/v1/yo`
 
-```
- // MORE CODE
+* And you will see this:
 
-const showTasks = async () => {
-  loadingDOM.style.visibility = 'visible'
-  try {
-    const {
-      // SEE THIS IS REDUNDANT!
-      data: { data: {tasks} },
-    } = await axios.get('/api/v1/tasks')
- 
- // MORE CODE
-```
+`Route does not exist`
+
+* Try it in Postman and you will see the same output
