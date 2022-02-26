@@ -13,13 +13,18 @@ const createTask = asyncWrapper(async (req, res) => {
   res.status(201).json({ task })
 })
 
-const getTask = asyncWrapper(async (req, res) => {
+const getTask = asyncWrapper(async (req, res, next) => {
   // destructure and use alias for improve code readability
   const { id: taskId } = req.params
   const task = await Task.findOne({ _id: taskId })
   // check if we found a task with that id
   if (!task) {
-    return res.status(404).json({ msg: `No task with id : ${taskId}` })
+    // we can create a new error object if we run the built-in JavaScript error constructor
+    const error = new Error('Not Found')
+    error.status = 404
+    // we could log out the error here but since we have our asyncWrapper we can us next by just adding a third argument of next
+    return next(error)
+    // return res.status(404).json({ msg: `No task with id : ${taskId}` })
   }
 
   // we get here all is well and 200 means success
