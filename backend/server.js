@@ -22,7 +22,7 @@ app.use(express.json())
 app.use('/api/v1/tasks', tasks)
 app.use(notFound)
 app.use(errorHandlerMiddleware)
-const port = 3000
+const port = process.env.PORT || 3000
 const start = async () => {
   // anytime you have an asynchronous operation it is very useful to
   // use a try/catch so that if there is an error we can handle it as well
