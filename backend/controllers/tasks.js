@@ -84,10 +84,40 @@ const updateTask = async (req, res) => {
   }
 }
 
+// here we review adding a PUT request
+// difference between PUT and PATCH Method
+// PUT (explanation)
+// if I send only one property in the req.body my expectaction is that all of the other properties will be removed from that item
+// we just have to make one change in our controller but mongoose by default does not do that and we need to tell it to overwrite the resource in the options like the following:
+const editTask = async (req, res) => {
+  try {
+    // grab the id parameter from the URL
+    const { id: taskId } = req.params
+
+    // search for task
+    const task = await Task.findOneAndUpdate({ _id: taskId }, req.body, {
+      new: true, // will return the new item that was updated
+      runValidators: true, // no explanation needed as this is obvious as to what it does
+      overwrite: true, // tell Mongoose to overwrite the properties (because we are using the PUT method)
+    })
+
+    // check if task id exists
+    if (!task) {
+      return res.status(404).json({ msg: `No task with id : ${taskId}` })
+    }
+
+    // pass in the data we are updating from the request body
+    res.status(200).json({ task })
+  } catch (error) {
+    res.status(500).json({ msg: error })
+  }
+}
+
 module.exports = {
   getAllTasks,
   createTask,
   getTask,
   updateTask,
   deleteTask,
+  editTask,
 }
