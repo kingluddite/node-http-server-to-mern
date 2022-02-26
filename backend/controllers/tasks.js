@@ -1,6 +1,6 @@
 const Task = require('../models/Task')
 const asyncWrapper = require('../middlewares/async')
-
+const { createCustomError } = require('../errors/custom-errors.js')
 const getAllTasks = asyncWrapper(async (req, res) => {
   const tasks = await Task.find({})
   res.status(200).json({ tasks })
@@ -19,12 +19,7 @@ const getTask = asyncWrapper(async (req, res, next) => {
   const task = await Task.findOne({ _id: taskId })
   // check if we found a task with that id
   if (!task) {
-    // we can create a new error object if we run the built-in JavaScript error constructor
-    const error = new Error('Not Found')
-    error.status = 404
-    // we could log out the error here but since we have our asyncWrapper we can us next by just adding a third argument of next
-    return next(error)
-    // return res.status(404).json({ msg: `No task with id : ${taskId}` })
+    return next(createCustomError(`No task with id : ${taskId}`, 404))
   }
 
   // we get here all is well and 200 means success
@@ -35,7 +30,7 @@ const deleteTask = asyncWrapper(async (req, res) => {
   const { id: taskId } = req.params
   const task = await Task.findOneAndDelete({ _id: taskId })
   if (!task) {
-    return res.status(404).json({ msg: `No task with id : ${taskId}` })
+    return next(createCustomError(`No task with id : ${taskId}`, 404))
   }
   res.status(200).json({ task })
   // res.status(200).send()
@@ -54,7 +49,7 @@ const updateTask = asyncWrapper(async (req, res) => {
 
   // check if task id exists
   if (!task) {
-    return res.status(404).json({ msg: `No task with id : ${taskId}` })
+    return next(createCustomError(`No task with id : ${taskId}`, 404))
   }
 
   // pass in the data we are updating from the request body
@@ -74,7 +69,7 @@ const editTask = asyncWrapper(async (req, res) => {
 
   // check if task id exists
   if (!task) {
-    return res.status(404).json({ msg: `No task with id : ${taskId}` })
+    return next(createCustomError(`No task with id : ${taskId}`, 404))
   }
 
   // pass in the data we are updating from the request body
