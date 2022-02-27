@@ -19,8 +19,12 @@ const start = async () => {
     await Task.deleteMany()
     await Task.create(jsonTasks)
     console.log('Successfully connected to populate.js')
+    // stop node process with no errors (0)
+    process.exit(0)
   } catch (error) {
     console.log(error)
+    // stop node process with errors (1)
+    process.exit(1)
   }
 }
 
