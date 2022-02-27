@@ -1,13 +1,17 @@
 // https://www.youtube.com/watch?v=qwfE7fSVaZM&t=1384s
+require('dotenv').config()
+// using 3rd party for async errors
+require('express-async-errors')
+
 const express = require('express')
 // initialize express and invoke it
 const app = express()
 const tasks = require('./routes/tasks')
 // we invoke connectDB
 const connectDB = require('./db/connect')
-require('dotenv').config()
 const notFound = require('./middlewares/not-found')
-const errorHandlerMiddleware = require('./middlewares/error-handler')
+// we swap out our basic error handler
+const errorHandlerMiddleware = require('./middlewares/new-error-handler')
 // middleware
 app.use(express.static('./public'))
 
