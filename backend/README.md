@@ -1,4 +1,6 @@
+%% https://www.youtube.com/watch?v=qwfE7fSVaZM&t=12866s
 # Find only featured products
+* Adding Filter functionality
 
 `controllers/products.js`
 
