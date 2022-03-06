@@ -1,63 +1,56 @@
-# Select certain fields
-* We tell it what fields we want to see in our query
-* Remember the order here and where `select()` falls into the order in `mongoose`
+# Limit query in mongoose (and skip)
+* Limit 4 records
+* If the limit is a number larger than all your items you just get all your items
 
 ```
 const getAllProductsStatic = async (req, res) => {
-  const products = await Product.find({}).select('price name')
+  const products = await Product.find({}).select('price name').limit(4)
   res.status(200).json({ products, nbHits: products.length })
 }
 ```
 
-* That just gets us `name` and `price` fields
-* You are in charge of the names for your query string (you tell the user in the docs what to use to select certain fields)
-* I add `select()` after `sort()` (but before `products`)
-* Make sure to add your name `fields` in your query string
+## Skip
+* Works same way but skips the number of items
 
+ ```
+// MORE CODE
+
+const getAllProductsStatic = async (req, res) => {
+  const products = await Product.find({})
+    .sort('name')
+    .select('name price')
+    .limit(10)
+    .skip('1')
+  res.status(200).json({ products, nbHits: products.length })
+}
+
+// MORE CODE
 ```
-  const { featured, company, name, sort, fields } = req.query
-```
 
-* and the full method
+## We use limit and skip to set up pagination functionality
+* we won't set up names in our `req.query` for `limit` and `skip` because we'll set up the variables with the same name
+* Our page is a string and we need to turn it into a number (if they don't scroll to page then we set the page to `1` but default)
+* We turn limit to a Number and default it to `10`
 
-```
-const getAllProducts = async (req, res) => {
-  // destructure parameters you want to check for
-  const { featured, company, name, sort, fields } = req.query
-  // good practice to create a new object for your query
-  const queryObject = {}
-
-  // if feature exists
-  if (featured) {
-    // if the query string value of 'true' then set new object featured to true
-    // otherwise set it to false
-    queryObject.featured = featured === 'true' ? true : false
-  }
-  if (company) {
-    queryObject.company = company
-  }
-  if (name) {
-    queryObject.name = { $regex: name, $options: 'i' }
-  }
-  // log it out to see what it looks like
-  // console.log(queryObject)
-  let result = Product.find(queryObject)
-  if (sort) {
-    const sortList = sort.split(',').join(' ')
-    result = result.sort(sortList)
-  } else {
-    result = result.sort('createdAt')
-  }
+ ```
+// MORE CODE
 
   if (fields) {
     const fieldsList = fields.split(',').join(' ')
     result = result.select(fieldsList)
-  } 
-   
+  }
+
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const skip = (page - 1) * limit
+
+  result = result.skip(skip).limit(limit)
+
   const products = await result
   res.status(200).json({ products, nbHits: products.length })
 }
+
+// MORE CODE
 ```
 
-* Now you can sort and get specific fields in Postman with a `fields` of `name,price` and `sort` with a value of `price`
 
