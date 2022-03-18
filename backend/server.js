@@ -6,6 +6,7 @@ require('express-async-errors')
 const express = require('express')
 // initialize express and invoke it
 const app = express()
+const mainRouter = require('./routes/main')
 const tasks = require('./routes/tasks')
 // we invoke connectDB
 const connectDB = require('./db/connect')
@@ -23,6 +24,7 @@ app.use(express.json())
 //   res.send('home page')
 // })
 
+app.use('/api/v1', mainRouter)
 app.use('/api/v1/tasks', tasks)
 app.use(notFound)
 app.use(errorHandlerMiddleware)
