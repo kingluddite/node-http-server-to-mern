@@ -4,6 +4,7 @@
 // setup authentication so only the request with JWT can access the dasboard
 
 const jwt = require('jsonwebtoken')
+const CustomAPIError = require('../errors/custom-error')
 const { BadRequestError } = require('../errors')
 
 const login = async (req, res) => {
@@ -29,10 +30,25 @@ const login = async (req, res) => {
 }
 
 const dashboard = async (req, res) => {
+  const authHeader = req.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // should error with 'Invalid Credentials'
+    // should pass 400 and not 401
+    // 400 is authentication error
+    // 401 is bad request error
+    // we'll use "no token provided" to make it easier to debug
+    throw new CustomAPIError('No token provided', 401)
+  }
+
+  // grab token
+  const token = authHeader.split(' ')[1]
+  console.log(token)
+
   const luckyNumber = Math.floor(Math.random() * 100)
 
   res.status(200).json({
-    msg: `Hello, ${req.user.username}`,
+    msg: `Hello, John Doe`,
     secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
   })
 }
