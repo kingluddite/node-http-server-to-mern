@@ -204,3 +204,45 @@ JWT is better than some random string, because JWT has a security feature, where
 * We'll use `jsonwebtoken`
 
 `$ npm i jsonwebtoken`
+
+### Test
+* Visit `https://jwt.io` and put in your token:
+* When we enter a body in our login route:
+
+```
+{
+    "username": "jim",
+    "password": "secret"
+}
+```
+
+* We get this response (notice the token)
+
+```
+{
+    "msg": "user created",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiamltIiwiaWF0IjoxNjQ3NjMxMzEzLCJleHAiOjE2NTAyMjMzMTN9.A_rmaj3vkLD_fjzTukJT3tW49s8uXU-xwJyjZ73pVKE"
+}
+```
+
+* Put this token in `https://jwt.io`
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiamltIiwiaWF0IjoxNjQ3NjMxMzEzLCJleHAiOjE2NTAyMjMzMTN9.A_rmaj3vkLD_fjzTukJT3tW49s8uXU-xwJyjZ73pVKE
+```
+
+* And you will see this:
+
+```
+{
+  "id": 18,
+  "username": "jim",
+  "iat": 1647630083,
+  "exp": 1650222083
+}
+```
+
+## TODO - Do a deep dive on best practices on how a JWT should be stored on the client side
+* A common approach on the front end is to set up the `Authorization` header in the request, it will be a GET request and add the `Bearer` schema like below:
+
+`Authorization: Bearer <token>` (fill in the token with your token from the server)
+
