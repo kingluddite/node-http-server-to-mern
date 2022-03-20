@@ -12,7 +12,9 @@ const tasks = require('./routes/tasks')
 const connectDB = require('./db/connect')
 const notFound = require('./middlewares/not-found')
 // we swap out our basic error handler
-const errorHandlerMiddleware = require('./middlewares/new-error-handler')
+// const errorHandlerMiddleware = require('./middlewares/new-error-handler')
+const errorHandlerMiddleware = require('./middlewares/error-handler')
+
 // middleware
 app.use(express.static('./public'))
 

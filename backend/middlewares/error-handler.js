@@ -1,6 +1,6 @@
 // we import the class we created
 // because we are going to check if the err we are using is an instance of this class
-const { CustomAPIError } = require('../errors/custom-errors')
+const CustomAPIError = require('../errors/custom-error')
 
 const errorHandlerMiddleware = (err, req, res, next) => {
   // check if error is instance of our custom error class
