@@ -1,90 +1,63 @@
-# Verify JWT Token
-`controllers/main.js`
-
-* We need to verify our token and here we'll decode the token and show what's inside it
+# Setup Authentication Middleware
+* We need a way to send our autentication to every protected route in a more efficient manner
+e
 
 ```
-// MORE CODE
-
-const dashboard = async (req, res) => {
   const authHeader = req.headers.authorization
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    // should error with 'Invalid Credentials'
-    // should pass 400 and not 401
-    // 400 is authentication error
-    // 401 is bad request error
-    // we'll use "no token provided" to make it easier to debug
     throw new CustomAPIError('No token provided', 401)
   }
 
   // grab token
   const token = authHeader.split(' ')[1]
+```
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    console.log(decoded)
-  } catch (error) {
-    throw new CustomAPIError('Not authorized to access this route', 401)
-  }
+* We'll take the above chunk of code, put it inside it's own middleware and then add it to any protected route
 
-  const luckyNumber = Math.floor(Math.random() * 100)
+## Let's set it up and test if we get the authorization in headers
+`/middlewares/auth.js`
 
-  res.status(200).json({
-    msg: `Hello, John Doe`,
-    secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
-  })
+```
+const authenticationMiddleware = async (req, res, next) => {
+  // remember to get to next middleware (in our case here a dashboard route, we need to use "next" function)
+  console.log(req.headers.authorization)
+  next()
 }
+
+module.exports = authenticationMiddleware
+```
+
+### Where are we going to use this middleware?
+* In our protected dashboard
+* So we just import our auth middleware into our routes and stick it before we call our dashboard controller
+
+`routes/main.js`
+
+```
+// MORE CODE
+
+const express = require('express')
+const router = express.Router()
+
+const { login, dashboard } = require('../controllers/main')
+
+const authMiddleware = require('../middlewares/auth')
+
+router.route('/dashboard').get(authMiddleware, dashboard)
+// router.route('/dashboard').get(dashboard)
+router.route('/login').post(login)
+
+module.exports = router
 
 // MORE CODE
 ```
 
-* And that will log out
-  * All of this comes from our payload when we sign the token
+* Now everytime someone hits our dashboard route, they will be hitting our auth middleware, and because we have `next` then we'll go to our dashboard
 
-```
-{ id: 18, username: 'jim', iat: 1647635082, exp: 1650227082 }
-```
+## Test it out
+* If you log in without credentials you will get Not authorized to access theis route and you will see `Bearer null` logged out to the terminal
+* If you log in with credentials you will see `Bearer <and your token here>` logged out to the terminal
 
-* Now we can plugin in our dynamic data
-
-```
-
-const dashboard = async (req, res) => {
-  const authHeader = req.headers.authorization
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    // should error with 'Invalid Credentials'
-    // should pass 400 and not 401
-    // 400 is authentication error
-    // 401 is bad request error
-    // we'll use "no token provided" to make it easier to debug
-
-    throw new BadRequestError('No token provided', 401)
-    // throw new CustomAPIError('No token provided', 401)
-  }
-
-  // grab token
-  const token = authHeader.split(' ')[1]
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-
-    const luckyNumber = Math.floor(Math.random() * 100)
-
-    res.status(200).json({
-      msg: `Hello, ${decoded.username}`,
-      secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
-    })
-  } catch (error) {
-    throw new BadRequestError('Not authorized to access this route', 401)
-    // throw new CustomAPIError('Not authorized to access this route', 401)
-  }
-}
-```
-* We can log in in client and enter username and password, then see the token in CDTs, then when we make those following requests for private data via the `Get Data` button and it will show the name and update the lucky number each time we click because our token is present
-
-### Security precaution
-* If person does not provide username and password and submits form, we have functionality that removes the token from localStorage
 
 

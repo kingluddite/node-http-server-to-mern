@@ -4,8 +4,8 @@
 // setup authentication so only the request with JWT can access the dasboard
 
 const jwt = require('jsonwebtoken')
-// const CustomAPIError = require('../errors/custom-error')
-const { BadRequestError } = require('../errors')
+const CustomAPIError = require('../errors/custom-error')
+// const { BadRequestError } = require('../errors')
 
 const login = async (req, res) => {
   const { username, password } = req.body
@@ -14,7 +14,7 @@ const login = async (req, res) => {
   // check in the controller
 
   if (!username || !password) {
-    throw new BadRequestError('Please provide email and password')
+    throw new CustomAPIError('Please provide email and password', 400)
   }
 
   //just for demo, normally provided by DB!!!!
@@ -33,14 +33,7 @@ const dashboard = async (req, res) => {
   const authHeader = req.headers.authorization
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    // should error with 'Invalid Credentials'
-    // should pass 400 and not 401
-    // 400 is authentication error
-    // 401 is bad request error
-    // we'll use "no token provided" to make it easier to debug
-
-    throw new BadRequestError('No token provided', 401)
-    // throw new CustomAPIError('No token provided', 401)
+    throw new CustomAPIError('No token provided', 401)
   }
 
   // grab token
@@ -56,7 +49,7 @@ const dashboard = async (req, res) => {
       secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
     })
   } catch (error) {
-    throw new BadRequestError('Not authorized to access this route', 401)
+    throw new CustomAPIError('Not authorized to access this route', 401)
     // throw new CustomAPIError('Not authorized to access this route', 401)
   }
 }
