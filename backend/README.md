@@ -60,4 +60,63 @@ module.exports = router
 * If you log in with credentials you will see `Bearer <and your token here>` logged out to the terminal
 
 
+## Rework our code to make the auth have all we need to authenticate the dashboard route inside it
+
+`middlewares/auth.js`
+
+```
+const jwt = require('jsonwebtoken')
+const CustomAPIError = require('../errors/custom-error')
+
+const authenticationMiddleware = async (req, res, next) => {
+  const authHeader = req.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new CustomAPIError('No token provided', 401)
+  }
+
+  // grab token
+  const token = authHeader.split(' ')[1]
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const { id, username } = decoded
+    req.user = { id, username }
+    next()
+  } catch (error) {
+    throw new CustomAPIError('Not authorized to access this route', 401)
+    // throw new CustomAPIError('Not authorized to access this route', 401)
+  }
+}
+
+module.exports = authenticationMiddleware
+```
+
+* And we update our dashboard
+
+`controllers/main.js`
+
+```
+// MORE CODE
+
+const dashboard = async (req, res) => {
+  console.log(req.user)
+  const luckyNumber = Math.floor(Math.random() * 100)
+
+  res.status(200).json({
+    msg: `Hello, ${req.user.username}`,
+    secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
+  })
+}
+
+// MORE CODE
+```
+
+## Test it out
+* if we log in and then click Get data we'll see this in our terminal console
+
+```
+{ id: 20, username: 'asdf' }
+```
+
 
