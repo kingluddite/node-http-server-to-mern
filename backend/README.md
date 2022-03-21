@@ -38,4 +38,63 @@ module.exports = CustomAPIError
 * `/errors/bad-request.js`
 * `/errors/index.js`
 
+`errors/index.js`
+
+```
+const CustomAPIError = require('./custom-error')
+const BadRequestError = require('./bad-request')
+const UnauthenticatedError = require('./unauthenticated')
+
+module.exports = {
+  CustomAPIError,
+  BadRequestError,
+  UnauthenticatedError,
+}
+
+```
+
+`errors/bad-request.js`
+
+```
+const CustomAPIError = require('./custom-error')
+
+class BadRequestError extends CustomAPIError {
+  constructor(message) {
+    super(message)
+    this.statusCode = 400
+  }
+}
+
+module.exports = BadRequestError
+
+```
+
+* `errors/unauthenticated.js`
+
+```
+const CustomAPIError = require('./custom-error')
+
+class UnauthenticatedRequestError extends CustomAPIError {
+  constructor(message) {
+    super(message)
+    this.statusCode = 401
+  }
+}
+
+module.exports = UnauthenticatedRequestError
+
+```
+
+`errors/custom-error.js`
+
+```
+class CustomAPIError extends Error {
+  constructor(message, statusCode) {
+    super(message)
+  }
+}
+
+module.exports = CustomAPIError
+
+```
 
