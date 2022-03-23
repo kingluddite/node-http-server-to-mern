@@ -10,3 +10,8 @@
 ```
 axios.defaults.baseURL = 'https://jobs-api-06.herokuapp.com/api/v1';
 ```
+
+## Added starter files
+`$ npm start`
+
+* You will see our basic route `jobs api`
