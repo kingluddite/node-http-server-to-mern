@@ -1,35 +1,38 @@
-# Set up controllers
-* jobs and auth
-
+# Setup routes
+* This is the compact way to write routes
 ```
-const getAllJobs = async (req, res) => {
-  res.send('register user')
-}
+const express = require('express')
+const router = express.Router()
 
-const getJob = async (req, res) => {
-  res.send('get job')
-}
-
-const createJob = async (req, res) => {
-  res.send('create job')
-}
-
-const updateJob = async (req, res) => {
-  res.send('update job')
-}
-
-const deleteJob = async (req, res) => {
-  res.send('delete job')
-}
-
-module.exports = {
+const {
   getAllJobs,
   getJob,
   createJob,
   updateJob,
   deleteJob,
-}
+} = require('../controllers/jobs')
+
+router.route('/').get(getAllJobs).post(createJob)
+router.route('/:id').get(getJob).patch(updateJob).delete(deleteJob)
+
+module.exports = router
 
 ```
+
+* This is the verbose way to write routes (either way is fine - your choice, but choose one and use it consistently)
+
+```
+const express = require('express')
+const router = express.Router()
+
+const { login, register } = require('../controllers/auth')
+
+router.post('/register', register)
+router.post('/login', login)
+
+module.exports = router
+
+```
+
 
 
