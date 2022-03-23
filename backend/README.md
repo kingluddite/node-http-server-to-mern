@@ -1,25 +1,30 @@
-# Setup routes
-* This is the compact way to write routes
+# Add routes and controllers to app
+
+ ```
+// MORE CODE
+
+const app = express()
+
+// connectDB
+
+// routers
+const authRouter = require('./routes/auth')
+const jobsRouter = require('./routes/jobs')
+
+// error handler
+
+// MORE CODE
+
+// routes
+app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/jobs', jobsRouter)
+
+app.use(notFoundMiddleware)
+
+// MORE CODE
 ```
-const express = require('express')
-const router = express.Router()
 
-const {
-  getAllJobs,
-  getJob,
-  createJob,
-  updateJob,
-  deleteJob,
-} = require('../controllers/jobs')
-
-router.route('/').get(getAllJobs).post(createJob)
-router.route('/:id').get(getJob).patch(updateJob).delete(deleteJob)
-
-module.exports = router
-
-```
-
-* This is the verbose way to write routes (either way is fine - your choice, but choose one and use it consistently)
+* And your endpoints for auth will be:
 
 ```
 const express = require('express')
@@ -27,12 +32,11 @@ const router = express.Router()
 
 const { login, register } = require('../controllers/auth')
 
+// domain/api/v1/auth/register
 router.post('/register', register)
+// domain/api/v1/auth/login
 router.post('/login', login)
 
 module.exports = router
-
 ```
-
-
 
