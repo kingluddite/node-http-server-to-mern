@@ -1,17 +1,35 @@
-# New Project
-* Backend with Login
-
-## Front end
-* [repo](https://github.com/john-smilga/react-jobs-app)
-* **note** Make sure to update the baseurl here to your heroku domain
-
-`src/axios.js`
+# Set up controllers
+* jobs and auth
 
 ```
-axios.defaults.baseURL = 'https://jobs-api-06.herokuapp.com/api/v1';
+const getAllJobs = async (req, res) => {
+  res.send('register user')
+}
+
+const getJob = async (req, res) => {
+  res.send('get job')
+}
+
+const createJob = async (req, res) => {
+  res.send('create job')
+}
+
+const updateJob = async (req, res) => {
+  res.send('update job')
+}
+
+const deleteJob = async (req, res) => {
+  res.send('delete job')
+}
+
+module.exports = {
+  getAllJobs,
+  getJob,
+  createJob,
+  updateJob,
+  deleteJob,
+}
+
 ```
 
-## Added starter files
-`$ npm start`
 
-* You will see our basic route `jobs api`
