@@ -41,4 +41,8 @@ const register = async (req, res) => {
 ```
 
 ## Frontend (react)
+* [frontend repo](https://github.com/kingluddite/react-jobs-app)
+* Create a user and view `Applications` tab
+* It is stored in localStorage so when we refresh we still have access to the token
 
+![see something like this](https://github.com/kingluddite/react-jobs-app)
