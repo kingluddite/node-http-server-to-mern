@@ -1,36 +1,11 @@
-# Mongoose pre hooks
-* Our controller can get really long so adding middleware can make it less long
-* we will use the mongoose `pre` hook
+# Generate JWT (token)
 
-## Important
-* When working with mongoose `pre` hook use regular function (function keyword value) and not arrow functions and the reason is `this` will be scoped to our document
+`controllers/auth.js`
 
 ```
 // MORE CODE
 
-const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs') // ADD!
-
-const UserSchema = new mongoose.Schema({
- // MORE CODE
-
-})
-
-// import to use function keyword and not arrow function
-// to ensure `this` is scoped to document
-UserSchema.pre('save', async function (next) {
-  const salt = await bcrypt.genSalt(10)
-  this.password = await bcrypt.hash(this.password, salt)
-  next()
-})
-
-module.exports = mongoose.model('User', UserSchema)
-```
-
-* And we can clean up our controller to be this
-
-```
- // MORE CODE
+const jwt = require('jsonwebtoken')
 
 const register = async (req, res) => {
   const { name, email, password } = req.body
@@ -39,48 +14,31 @@ const register = async (req, res) => {
   }
 
   const user = await User.create({ ...req.body })
-  res.status(StatusCodes.CREATED).json({ user })
+  // for better security we should store the jwt secret in environment variables
+  // remember you never want to store anything valuable inside the sign of the token
+  const token = jwt.sign({ userId: user._id, name: user.name }, 'jwtSecret', {
+    expiresIn: '30d',
+  })
+  // send back the token instead of the user
+  // lots of ways to do this
+  // maybe your frontend just needs the token, or the token and the username
+  // but you definately want to send back the token to the client because that will allow the user to access private resources later on
+  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
 }
- // MORE CODE
-```
-
-* And it works the same but it is much, much cleaner
-* **problem** When we create a new user we don't want to send a password back to the client (BAD PRACTICE)
-
-## New with mongoose 5
-* We can use async await and that means this code
-
-```
-// MORE CODE
-
-UserSchema.pre('save', async function (next) {
-  const salt = await bcrypt.genSalt(10)
-  this.password = await bcrypt.hash(this.password, salt)
-  next()
-})
 
 // MORE CODE
 ```
 
-* Can remove the `next` and it still works: (see below)
+* Test it out and you will see you send back the user's name and the token to the client
 
 ```
-// MORE CODE
-
-UserSchema.pre('save', async function () {
-  const salt = await bcrypt.genSalt(10)
-  this.password = await bcrypt.hash(this.password, salt)
-})
-
-// MORE CODE
+{
+    "user": {
+        "name": "dale5@example.com"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjNjZWYzMjY0NDFiNjVmNjM3ZWZhMDciLCJuYW1lIjoiZGFsZTVAZXhhbXBsZS5jb20iLCJpYXQiOjE2NDgxNjA1NjMsImV4cCI6MTY1MDc1MjU2M30.2a_WagNbuq6IBcuJsRcWafg-itfvqSz_Z2DtRUGqxqo"
+}
 ```
 
-![no next needed in mongoose 5](https://i.imgur.com/tXmKmPL.png)
-
-* [mongoose docs](https://mongoosejs.com/docs/middleware.html#pre)
-
-## Test it out and it works the same without next
-
-
-
+## Frontend (react)
 
