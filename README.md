@@ -1,6 +1,22 @@
-# From a native Node HTTP server to a MERN app: The Evolution
+# HTTP Server
+* Just a simple HTTP server with some routes
 
-## Description
-* I want to play around with various ways to create a backend in Node.js and then add a frontend library (React) to create a Full Stack MERN application
+## Contents
+* Basic HTTP node server
+* jQuery
+* including headers and footers (TODO: Update with new code)
+* routes 3 pages
+* TODO: figure out how to serve static files
 
-* I will divide these into various branches each with a README explaining what is going on in each branch
+## Instructions
+`$ npm run dev`
+
+* That will run nodemon on this host `http://localhost:3000`
+* That home route `/` serves an html page using Bootstrap 4, fontawesome (5) some custom css and bootstrap 4 javascript using jQuery.
+
+## TODO
+* I want to add serving static assets like images and local JavaScript
+
+## Next Branch: Express
+* Convert from node's native http module to using Express
+
