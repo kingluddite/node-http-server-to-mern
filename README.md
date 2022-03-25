@@ -1,8 +1,36 @@
-# Put vs Patch
-* Both for updating the resource
+# Set up controllers
+* jobs and auth
 
-## PUT
-* Use `PUT` when you are trying to replace the existing resource
+```
+const getAllJobs = async (req, res) => {
+  res.send('register user')
+}
 
-## PATCH
-* Use for partial update
+const getJob = async (req, res) => {
+  res.send('get job')
+}
+
+const createJob = async (req, res) => {
+  res.send('create job')
+}
+
+const updateJob = async (req, res) => {
+  res.send('update job')
+}
+
+const deleteJob = async (req, res) => {
+  res.send('delete job')
+}
+
+module.exports = {
+  getAllJobs,
+  getJob,
+  createJob,
+  updateJob,
+  deleteJob,
+}
+
+```
+
+
+
