@@ -1,8 +1,18 @@
-# Put vs Patch
-* Both for updating the resource
+# New Project
+* Backend with Login
 
-## PUT
-* Use `PUT` when you are trying to replace the existing resource
+## Front end
+* [repo](https://github.com/john-smilga/react-jobs-app)
+* **note** Make sure to update the baseurl here to your heroku domain
 
-## PATCH
-* Use for partial update
+`src/axios.js`
+
+```
+axios.defaults.baseURL = 'https://jobs-api-06.herokuapp.com/api/v1';
+```
+
+## Added starter files
+`$ npm start`
+
+* You will see our basic route `jobs api`
+
