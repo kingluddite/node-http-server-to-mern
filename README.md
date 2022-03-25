@@ -1,8 +1,10 @@
-# Put vs Patch
-* Both for updating the resource
+# Custom port for development
+`server.js`
 
-## PUT
-* Use `PUT` when you are trying to replace the existing resource
+```
+const port = process.env.PORT || 3000
+```
 
-## PATCH
-* Use for partial update
+## Test it out in terminal to see if it works
+`$ PORT=6000 node server.js`
+
