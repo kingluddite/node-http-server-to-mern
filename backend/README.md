@@ -1,148 +1,156 @@
-# Mongoose instance methods
-* [instance methods](https://mongoosejs.com/docs/guide.html#methods)
+# Login
+1. Check whether we get email and password and we'll get some kind of values, if not we'll send bad request
+2. After that we check for the user in our Database, if we find one we'll send back user, if not we'll send back another error
 
-* They will be instances of our schema
-* Every document we create we can have instances on them
-* **benefit** Keep all our logic in one place where we have the user schema instead of spread out across all our controllers
+## Create a new request in Postman
+`POST {{URL}}/auth/login`
 
-## I want to add a way to get the user name
-`models/User.js`
-
-```
-// MORE CODE
-
-UserSchema.methods.getName = function () {
-  // import to use regular function because `this` is tied to document
-  return this.name
-}
-
-module.exports = mongoose.model('User', UserSchema)
-
-// MORE CODE
-```
-
-* Then in the register controller we make this change from this:
+`controllers/auth.js`
 
 ```
 // MORE CODE
 
-  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
+const { BadRequestError, UnauthenticatedError } = require('../errors')
 
-// MORE CODE
-```
+ // MORE CODE
 
-* To this
+const login = async (req, res) => {
+  const { email, password } = req.body
 
-```
-// MORE CODE
-
-  res.status(StatusCodes.CREATED).json({ user: { name: user.getName() }, token })
-
-// MORE CODE
-```
-
-* This shows us we can generate the name using the instance method itself
-* This was just to show us how easy it is to use instance methods but we'll remove that code and use an instance method for something more practical
-
-### sign a JWT
-* Here is our current register controller
-
-```
-const register = async (req, res) => {
-  const { name, email, password } = req.body
-  if (!name || !email || !password) {
-    throw new BadRequestError('Please provide name, email, and password')
+  if (!email || !password) {
+    throw new BadRequestError('Please provide email and password')
   }
 
-  const user = await User.create({ ...req.body })
-  // for better security we should store the jwt secret in environment variables
-  // remember you never want to store anything valuable inside the sign of the token
-  const token = jwt.sign({ userId: user._id, name: user.name }, 'jwtSecret', {
-    expiresIn: '30d',
-  })
-  // send back the token instead of the user
-  // lots of ways to do this
-  // maybe your frontend just needs the token, or the token and the username
-  // but you definately want to send back the token to the client because that will allow the user to access private resources later on
-  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
-}
-
-```
-
-* Inside it we create our token in that controller with:
-
-```
-// MORE CODE
-
-  const token = jwt.sign({ userId: user._id, name: user.name }, 'jwtSecret', {
-    expiresIn: '30d',
-  })
-
-// MORE CODE
-```
-
-* We can make our code cleaner by removing this from the controller and tethering it directly to our User model using a instance method
-
-### Remove token generation from our register controller
-* Remove jwt import as we no longer need it
-
-```
-const register = async (req, res) => {
-  const { name, email, password } = req.body
-  if (!name || !email || !password) {
-    throw new BadRequestError('Please provide name, email, and password')
+  // look for user
+  const user = await User.findOne({ email })
+  // compare password
+  if (!user) {
+    throw new UnauthenticatedError('Invalid credentials')
   }
 
-  const user = await User.create({ ...req.body })
-  // for better security we should store the jwt secret in environment variables
-  // remember you never want to store anything valuable inside the sign of the token
-  
-  // REMOVED CODE FROM HERE
-  
-  // send back the token instead of the user
-  // lots of ways to do this
-  // maybe your frontend just needs the token, or the token and the username
-  // but you definately want to send back the token to the client because that will allow the user to access private resources later on
-  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
-}
-```
-
-### Add an instance method
-`models/User.js`
-
-```
-// MORE CODE
-
-UserSchema.methods.createJWT = function () {
-  return jwt.sign({ userId: this._id, name: this.name }, 'jwtSecret', {
-    expiresIn: '30d',
-  })
-}
-
-module.exports = mongoose.model('User', UserSchema)
-
-// MORE CODE
-```
-
-* Now we invoke this instance method inside our controller
-
-```
-// MORE CODE
-
-const register = async (req, res) => {
-  const { name, email, password } = req.body
-  if (!name || !email || !password) {
-    throw new BadRequestError('Please provide name, email, and password')
-  }
-
-  const user = await User.create({ ...req.body })
-  // once we create the user we have that instance method
   const token = user.createJWT()
-  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token })
+  res.status(StatusCodes.OK).json({ user: { name: user.name }, token })
 }
 
 // MORE CODE
 ```
+
+* Sending this in body of postman (valid email and password of registered user)
+
+```
+{
+    
+    "email": "garrett@example.com",
+    "password": "secret"
+}
+
+```
+* Log without credentials and you get "please provide email and password"
+* Login with correct email and password and you get the username in response and the token
 
 ## Test
-* Add a user and it works as it did before but our code is more robust
+* If you change the email to an invalid email you will get `Invalid Credentials` error
+* TODO - but any password works
+
+## Now we need to compare the password using our bcryptjs library
+`models/User.js`
+
+```
+// MORE CODE
+
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrpt.compare(candidatePassword, this.password)
+  return isMatch
+}
+
+module.exports = mongoose.model('User', UserSchema)
+
+// MORE CODE
+```
+
+## And check password
+
+```
+// MORE CODE
+
+const login = async (req, res) => {
+  const { email, password } = req.body
+
+  if (!email || !password) {
+    throw new BadRequestError('Please provide email and password')
+  }
+
+  // look for user
+  const user = await User.findOne({ email })
+  // compare password
+  if (!user) {
+    throw new UnauthenticatedError('Invalid credentials')
+  }
+
+  const isPasswordCorrect = await user.comparePassword(password)
+  if (!isPasswordCorrect) {
+    throw new UnauthenticatedError('Invalid credentials')
+  }
+
+  const token = user.createJWT()
+  res.status(StatusCodes.OK).json({ user: { name: user.name }, token })
+}
+
+// MORE CODE
+```
+* Now test and a good email password works and a bad password shows credentials error
+
+## Why did we check for email and password in controller?
+
+`controllers/auth.js`
+
+```
+const login = async (req, res) => {
+  const { email, password } = req.body
+
+  if (!email || !password) {
+    throw new BadRequestError('Please provide email and password')
+  }
+```
+
+* Comment it out and we'll see why
+
+```
+const login = async (req, res) => {
+  const { email, password } = req.body
+
+  // if (!email || !password) {
+  //   throw new BadRequestError('Please provide email and password')
+  // }
+```
+* Now we are no longer checking for empty values and if you forget to add a password you will just see this in postman
+
+```
+{
+    "err": {}
+}
+```
+* Why is it empty?
+* The comparePassword method will throw an error because we are passing in an empty value for password
+* We are getting the error and we are handling the error (make this change)
+
+`middlewares/error-handler.js`
+
+```
+// MORE CODE
+
+const { CustomAPIError } = require('../errors')
+const { StatusCodes } = require('http-status-codes')
+const errorHandlerMiddleware = (err, req, res, next) => {
+  console.log(err) // add this
+
+// MORE CODE
+```
+
+* Now we see `Error: Illegal arguments: undefined, string` in the terminal
+* So the long story short is that it is easier to just check for it inside our login controller
+* Put code back to the way it was before checking for no password error without controller check
+
+### 8000 error
+* This is a mongo error meaning your password and email are incorrect
+* **tip** Great way to check connection is click mongodb connection and try to log in via the terminal (if you can your string is correct, if not generate a new one)
